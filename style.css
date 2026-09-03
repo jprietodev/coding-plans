@@ -29,6 +29,11 @@ table { width: 100%; border-collapse: collapse; min-width: 1120px; }
 th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: middle; white-space: nowrap; }
 th { position: sticky; top: 0; background: var(--panel-2); color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; }
 th:first-child, th:nth-child(2), td:first-child, td:nth-child(2) { text-align: left; }
+.sort-button { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; }
+th:first-child .sort-button, th:nth-child(2) .sort-button { justify-content: flex-start; }
+.sort-button:hover, .sort-button:focus-visible { color: var(--text); }
+.sort-button:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.sort-indicator { display: inline-block; min-width: 1em; color: var(--accent); font-size: .8em; }
 tbody tr:hover { background: var(--panel-2); }
 tbody tr:last-child td { border-bottom: 0; }
 td small { display: block; margin-top: 2px; color: var(--muted); font-size: .72rem; }
