@@ -2,6 +2,12 @@
 
 Daily comparison of effective LLM token prices for coding subscription plans.
 
+## Live
+
+- Comparator: https://jprietodev.github.io/coding-plans/
+- Current normalized data (JSON): https://jprietodev.github.io/coding-plans/data/current.json
+- Source repository: https://github.com/jprietodev/coding-plans
+
 The project currently compares:
 
 - OpenCode Go
@@ -36,4 +42,4 @@ Outputs:
 - `data/history/YYYY-MM-DD.json` — daily snapshot
 - `index.html` — static comparison UI
 
-GitHub Actions runs the scraper daily and commits changed data back to the repository.
+GitHub Actions runs the scraper daily, commits changed data back to the repository, and publishes the latest comparison to GitHub Pages.
