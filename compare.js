@@ -266,9 +266,7 @@ function renderCompareTray() {
 }
 
 function refreshCompareUI() {
-  renderCompareTray();
-  renderComparison();
-  if (state.rows.length) enhanceTableRows();
+  renderTable();
 }
 
 function addComparison(row) {
