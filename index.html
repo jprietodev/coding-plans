@@ -7,6 +7,7 @@
   <meta name="description" content="Compare effective LLM token prices and coding benchmarks in coding subscription plans.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="compare.css">
+  <link rel="stylesheet" href="insights.css">
 </head>
 <body>
   <main class="shell">
@@ -79,7 +80,7 @@
         <label>
           Capability · Y axis
           <select id="quadrant-y">
-            <option value="coding_intelligence">Coding intelligence · 50% Coding + 50% Agentic</option>
+            <option value="coding_intelligence">Coding intelligence · configurable</option>
             <option value="benchmark_mean">Benchmark mean · Overall + Coding + Agentic</option>
             <option value="livebench_coding">LiveBench Coding</option>
             <option value="livebench_agentic_coding">LiveBench Agentic Coding</option>
@@ -89,7 +90,7 @@
         <label>
           Economics · X axis
           <select id="quadrant-x">
-            <option value="coding_cost">Coding cost · 40% input + 50% output + 10% cache</option>
+            <option value="coding_cost">Coding cost · configurable</option>
             <option value="effective_price_mean">Effective price mean · simple average</option>
             <option value="effective_input_per_mt">Effective input price</option>
             <option value="effective_output_per_mt">Effective output price</option>
@@ -142,5 +143,6 @@
   </main>
   <script src="app.js" defer></script>
   <script src="compare.js" defer></script>
+  <script src="insights.js" defer></script>
 </body>
 </html>
