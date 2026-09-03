@@ -9,7 +9,6 @@ const els = {
   rows: document.querySelector('#rows'),
   search: document.querySelector('#search'),
   provider: document.querySelector('#provider'),
-  sort: document.querySelector('#sort'),
   summary: document.querySelector('#summary'),
   error: document.querySelector('#error'),
   sortHeaders: [...document.querySelectorAll('th[data-sort]')],
@@ -52,16 +51,12 @@ function updateSortHeaders() {
   }
 }
 
-function setSort(key, direction = null) {
-  if (state.sortKey === key && direction === null) {
+function setSort(key) {
+  if (state.sortKey === key) {
     state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
   } else {
     state.sortKey = key;
-    state.sortDirection = direction ?? 'asc';
-  }
-
-  if ([...els.sort.options].some((option) => option.value === key)) {
-    els.sort.value = key;
+    state.sortDirection = 'asc';
   }
 
   render();
@@ -125,11 +120,6 @@ async function load() {
 
 els.search.addEventListener('input', render);
 els.provider.addEventListener('change', render);
-els.sort.addEventListener('change', () => {
-  const key = els.sort.value;
-  const defaultDirection = key === 'model' ? 'asc' : 'asc';
-  setSort(key, defaultDirection);
-});
 
 for (const th of els.sortHeaders) {
   const button = th.querySelector('.sort-button');
