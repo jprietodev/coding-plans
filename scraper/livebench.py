@@ -48,7 +48,11 @@ def canonical_name(value: str) -> str:
         value,
         flags=re.IGNORECASE,
     )
-    value = re.sub(r"\b(?:latest|max effort|max|xhigh effort|xhigh|high effort|medium effort|thinking auto|thinking)\b", " ", value)
+    value = re.sub(
+        r"\b(?:latest|max effort|max|xhigh effort|xhigh|high effort|medium effort|thinking auto|thinking|highspeed|contributor)\b",
+        " ",
+        value,
+    )
     return re.sub(r"[^a-z0-9]+", "", value)
 
 
