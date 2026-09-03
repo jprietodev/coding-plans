@@ -69,14 +69,18 @@ def effective_price(api_price: float | None, subscription: float, allowance: flo
 def extract_limits(text: str) -> dict[str, float | None]:
     compact = re.sub(r"\s+", " ", text)
 
-    def find(pattern: str) -> float | None:
-        match = re.search(pattern, compact, flags=re.IGNORECASE)
+    def find(label_pattern: str) -> float | None:
+        match = re.search(
+            rf"{label_pattern}[^$]{{0,30}}\$\s*([0-9]+(?:\.[0-9]+)?)",
+            compact,
+            flags=re.IGNORECASE,
+        )
         return float(match.group(1)) if match else None
 
     return {
-        "five_hour_usd": find(r"5[- ]hour(?:\s+(?:limit|cap))?\s*[—–:\-]*\s*\$([0-9]+(?:\.[0-9]+)?)"),
-        "weekly_usd": find(r"weekly(?:\s+(?:limit|cap))?\s*[—–:\-]*\s*\$([0-9]+(?:\.[0-9]+)?)"),
-        "monthly_usd": find(r"monthly(?:\s+(?:limit|cap))?\s*[—–:\-]*\s*\$([0-9]+(?:\.[0-9]+)?)"),
+        "five_hour_usd": find(r"5[- ]hour(?:\s+(?:limit|cap))?"),
+        "weekly_usd": find(r"weekly(?:\s+(?:limit|cap))?"),
+        "monthly_usd": find(r"monthly(?:\s+(?:limit|cap|credits))?"),
     }
 
 
@@ -90,6 +94,7 @@ def fetch_html(url: str) -> str:
         },
     )
     response.raise_for_status()
+    response.encoding = "utf-8"
     return response.text
 
 
