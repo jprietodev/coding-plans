@@ -56,6 +56,18 @@ The Y axis can also use the simple mean of Overall, Coding and Agentic Coding or
 
 Quadrant thresholds are configurable between median and mean. The highlighted sweet spot contains combinations on the high-capability side and the economically better side of the selected threshold. Bubble size can represent monthly allowance, value multiplier, or be fixed. Global model/provider filters also apply to the quadrant and its thresholds.
 
+## Side-by-side comparison
+
+Any model + plan row can be added with the **+ Compare** control in the model column. The selection supports an arbitrary number of combinations and can be opened from the persistent comparison tray or the **Compare** tab.
+
+The side-by-side matrix includes benchmark scores and ranks, coding intelligence, allowance/value, nominal API rates, effective token prices, cache prices and the derived coding-cost metric. For numeric metrics, the best value among the selected combinations is highlighted automatically.
+
+Comparison selections are stored locally in the browser so they survive page reloads. Each model can be removed individually, or the complete comparison can be cleared at once.
+
+## Column visibility
+
+The **Columns** menu controls which data columns are shown in the main table. Model remains visible because it contains the comparison action; all other data columns can be hidden or restored. Column preferences are persisted in browser local storage.
+
 ## Run
 
 ```bash
@@ -70,5 +82,7 @@ Outputs:
 - `data/current.json` — latest normalized pricing and benchmark data
 - `data/history/YYYY-MM-DD.json` — daily snapshot
 - `index.html` — static comparison UI
+- `app.js` / `style.css` — base table and quadrant UI
+- `compare.js` / `compare.css` — multi-model comparison and column controls
 
-GitHub Actions runs the scraper daily, commits changed data back to the repository, and publishes the latest comparison to GitHub Pages. The Pages workflow also validates `app.js` syntax with Node before deployment.
+GitHub Actions runs the scraper daily, commits changed data back to the repository, and publishes the latest comparison to GitHub Pages. The Pages workflow validates both frontend JavaScript files with Node before deployment.
