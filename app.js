@@ -11,8 +11,17 @@ const els = {
   provider: document.querySelector('#provider'),
   summary: document.querySelector('#summary'),
   error: document.querySelector('#error'),
+  benchmarkMeta: document.querySelector('#benchmark-meta'),
   sortHeaders: [...document.querySelectorAll('th[data-sort]')],
 };
+
+const descendingPreferred = new Set([
+  'livebench_overall',
+  'livebench_coding',
+  'livebench_agentic_coding',
+  'monthly_allowance_usd',
+  'value_multiplier',
+]);
 
 const money = (value, digits = 4) => {
   if (value === null || value === undefined) return '—';
@@ -26,18 +35,30 @@ const escapeHtml = (value) => String(value)
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#039;');
 
-function compareValues(a, b, key) {
+function benchmarkCell(value, rank, total) {
+  if (value === null || value === undefined) return '<span class="missing">—</span>';
+  const rankText = rank && total ? `#${rank}/${total}` : 'unranked';
+  return `<strong class="benchmark-score">${Number(value).toFixed(1)}</strong><small>${rankText}</small>`;
+}
+
+function compareRows(a, b, key, direction) {
   const av = a[key];
   const bv = b[key];
+  const aMissing = av === null || av === undefined;
+  const bMissing = bv === null || bv === undefined;
 
-  if (av === null || av === undefined) return 1;
-  if (bv === null || bv === undefined) return -1;
+  if (aMissing && bMissing) return 0;
+  if (aMissing) return 1;
+  if (bMissing) return -1;
 
+  let comparison;
   if (typeof av === 'string' || typeof bv === 'string') {
-    return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: 'base' });
+    comparison = String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: 'base' });
+  } else {
+    comparison = Number(av) - Number(bv);
   }
 
-  return Number(av) - Number(bv);
+  return direction === 'asc' ? comparison : -comparison;
 }
 
 function updateSortHeaders() {
@@ -56,7 +77,7 @@ function setSort(key) {
     state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
   } else {
     state.sortKey = key;
-    state.sortDirection = 'asc';
+    state.sortDirection = descendingPreferred.has(key) ? 'desc' : 'asc';
   }
 
   render();
@@ -65,6 +86,7 @@ function setSort(key) {
 function render() {
   const search = els.search.value.trim().toLowerCase();
   const provider = els.provider.value;
+  const rankTotal = state.data?.benchmarks?.livebench?.rank_total ?? null;
 
   let rows = state.rows.filter((row) => {
     const searchMatch = !search || row.model.toLowerCase().includes(search);
@@ -72,17 +94,16 @@ function render() {
     return searchMatch && providerMatch;
   });
 
-  rows.sort((a, b) => {
-    const comparison = compareValues(a, b, state.sortKey);
-    return state.sortDirection === 'asc' ? comparison : -comparison;
-  });
-
+  rows.sort((a, b) => compareRows(a, b, state.sortKey, state.sortDirection));
   updateSortHeaders();
 
   els.rows.innerHTML = rows.map((row) => `
     <tr>
       <td><span class="provider">${escapeHtml(row.provider)}</span><small>${escapeHtml(row.plan)}</small></td>
-      <td class="model">${escapeHtml(row.model)}</td>
+      <td class="model">${escapeHtml(row.model)}${row.livebench_model ? `<small title="LiveBench model id">${escapeHtml(row.livebench_model)}</small>` : ''}</td>
+      <td class="benchmark">${benchmarkCell(row.livebench_overall, row.livebench_overall_rank, rankTotal)}</td>
+      <td class="benchmark coding">${benchmarkCell(row.livebench_coding, row.livebench_coding_rank, rankTotal)}</td>
+      <td class="benchmark">${benchmarkCell(row.livebench_agentic_coding, row.livebench_agentic_coding_rank, rankTotal)}</td>
       <td>${money(row.monthly_allowance_usd, 2)}</td>
       <td><strong>${Number(row.value_multiplier).toFixed(2)}×</strong><small>${Number(row.discount_vs_api_pct).toFixed(1)}% vs API</small></td>
       <td>${money(row.api_input_per_mt)}</td>
@@ -111,6 +132,12 @@ async function load() {
 
     const generated = new Date(state.data.generated_at);
     els.summary.textContent = `${state.rows.length} model rows · updated ${generated.toLocaleString()}`;
+
+    const livebench = state.data.benchmarks?.livebench;
+    if (livebench && els.benchmarkMeta) {
+      els.benchmarkMeta.textContent = `Release ${livebench.release}; ${livebench.matched_unique_models} unique plan models matched.`;
+    }
+
     render();
   } catch (error) {
     els.error.hidden = false;
