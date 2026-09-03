@@ -38,6 +38,9 @@ jobs:
         with:
           ref: main
 
+      - name: Validate frontend JavaScript
+        run: node --check app.js
+
       - name: Prepare static site
         run: |
           mkdir -p _site/data
