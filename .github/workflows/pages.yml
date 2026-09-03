@@ -8,9 +8,12 @@ on:
       - "index.html"
       - "app.js"
       - "compare.js"
+      - "insights.js"
       - "style.css"
       - "compare.css"
+      - "insights.css"
       - "data/current.json"
+      - "data/history/**"
       - ".github/workflows/pages.yml"
   workflow_run:
     workflows: ["Update pricing"]
@@ -44,12 +47,22 @@ jobs:
         run: |
           node --check app.js
           node --check compare.js
+          node --check insights.js
 
       - name: Prepare static site
         run: |
-          mkdir -p _site/data
-          cp index.html app.js compare.js style.css compare.css _site/
+          mkdir -p _site/data/history
+          cp index.html app.js compare.js insights.js style.css compare.css insights.css _site/
           cp data/current.json _site/data/current.json
+          cp data/history/*.json _site/data/history/ 2>/dev/null || true
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          history = Path('_site/data/history')
+          names = sorted(path.name for path in history.glob('*.json') if path.name != 'index.json')
+          (history / 'index.json').write_text(json.dumps(names, indent=2) + '\n', encoding='utf-8')
+          PY
           touch _site/.nojekyll
 
       - name: Configure Pages
