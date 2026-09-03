@@ -7,7 +7,9 @@ on:
     paths:
       - "index.html"
       - "app.js"
+      - "compare.js"
       - "style.css"
+      - "compare.css"
       - "data/current.json"
       - ".github/workflows/pages.yml"
   workflow_run:
@@ -39,12 +41,14 @@ jobs:
           ref: main
 
       - name: Validate frontend JavaScript
-        run: node --check app.js
+        run: |
+          node --check app.js
+          node --check compare.js
 
       - name: Prepare static site
         run: |
           mkdir -p _site/data
-          cp index.html app.js style.css _site/
+          cp index.html app.js compare.js style.css compare.css _site/
           cp data/current.json _site/data/current.json
           touch _site/.nojekyll
 
