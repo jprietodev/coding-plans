@@ -41,6 +41,21 @@ Each score is accompanied by a rank calculated only among unique LiveBench-match
 
 Model matching is normalized from the provider model name to LiveBench's model identifiers. The matched `livebench_model` id is included in `data/current.json` for auditability. Models that are not present in the current LiveBench release keep an empty benchmark score rather than receiving an inferred value.
 
+## Quadrant view
+
+The public comparator includes a configurable capability/economics scatter plot. Each bubble represents one model + plan combination.
+
+Default axes:
+
+```text
+Coding intelligence = 50% LiveBench Coding + 50% LiveBench Agentic Coding
+Coding cost = 40% effective input + 50% effective output + 10% effective cache read
+```
+
+The Y axis can also use the simple mean of Overall, Coding and Agentic Coding or any individual LiveBench metric. The X axis can use the simple mean of available effective token prices, individual effective price components, value multiplier, or monthly allowance.
+
+Quadrant thresholds are configurable between median and mean. The highlighted sweet spot contains combinations on the high-capability side and the economically better side of the selected threshold. Bubble size can represent monthly allowance, value multiplier, or be fixed. Global model/provider filters also apply to the quadrant and its thresholds.
+
 ## Run
 
 ```bash
@@ -56,4 +71,4 @@ Outputs:
 - `data/history/YYYY-MM-DD.json` — daily snapshot
 - `index.html` — static comparison UI
 
-GitHub Actions runs the scraper daily, commits changed data back to the repository, and publishes the latest comparison to GitHub Pages.
+GitHub Actions runs the scraper daily, commits changed data back to the repository, and publishes the latest comparison to GitHub Pages. The Pages workflow also validates `app.js` syntax with Node before deployment.
