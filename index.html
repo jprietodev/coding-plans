@@ -31,17 +31,21 @@
         Sort by
         <select id="sort">
           <option value="model">Model</option>
-          <option value="effective_output_per_mt">Effective output price</option>
-          <option value="effective_input_per_mt">Effective input price</option>
-          <option value="value_multiplier">Value multiplier</option>
+          <option value="provider">Provider</option>
           <option value="monthly_allowance_usd">Monthly allowance</option>
+          <option value="value_multiplier">Value multiplier</option>
+          <option value="api_input_per_mt">Input API price</option>
+          <option value="effective_input_per_mt">Effective input price</option>
+          <option value="api_output_per_mt">Output API price</option>
+          <option value="effective_output_per_mt">Effective output price</option>
+          <option value="effective_cache_read_per_mt">Effective cache read</option>
         </select>
       </label>
     </section>
 
     <section class="method">
       <strong>Effective price</strong> = API price × subscription price ÷ model allowance.
-      It assumes the full monthly allowance is consumed.
+      It assumes the full monthly allowance is consumed. Click any table header to sort ascending or descending.
     </section>
 
     <div id="error" class="error" hidden></div>
@@ -50,15 +54,15 @@
       <table>
         <thead>
           <tr>
-            <th>Provider</th>
-            <th>Model</th>
-            <th>Allowance</th>
-            <th>Value</th>
-            <th>Input API</th>
-            <th>Input effective</th>
-            <th>Output API</th>
-            <th>Output effective</th>
-            <th>Cache read effective</th>
+            <th data-sort="provider" aria-sort="none"><button class="sort-button" type="button">Provider <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="model" aria-sort="ascending"><button class="sort-button" type="button">Model <span class="sort-indicator" aria-hidden="true">▲</span></button></th>
+            <th data-sort="monthly_allowance_usd" aria-sort="none"><button class="sort-button" type="button">Allowance <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="value_multiplier" aria-sort="none"><button class="sort-button" type="button">Value <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="api_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input API <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="effective_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="api_output_per_mt" aria-sort="none"><button class="sort-button" type="button">Output API <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="effective_output_per_mt" aria-sort="none"><button class="sort-button" type="button">Output effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="effective_cache_read_per_mt" aria-sort="none"><button class="sort-button" type="button">Cache read effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
