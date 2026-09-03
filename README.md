@@ -1,6 +1,6 @@
 # Coding Plans Comparator
 
-Daily comparison of effective LLM token prices for coding subscription plans.
+Daily comparison of effective LLM token prices and coding benchmark scores for coding subscription plans.
 
 ## Live
 
@@ -27,6 +27,20 @@ discount_vs_api = 1 - S / A
 
 Example: a model priced at $1 / 1M tokens with a $15 allowance on a $10 plan has an effective price of about $0.667 / 1M tokens when the monthly allowance is fully used.
 
+## Benchmarks
+
+Benchmark data comes from the public [LiveBench](https://livebench.ai/) leaderboard data in [`LiveBench/new-livebench`](https://github.com/LiveBench/new-livebench).
+
+The scraper automatically detects the latest release declared by LiveBench and calculates:
+
+- **LiveBench Overall** — equal-weighted mean of the published category scores.
+- **LiveBench Coding** — mean of LiveBench `code_generation` and `code_completion`.
+- **LiveBench Agentic Coding** — mean of `javascript`, `typescript`, and `python` agentic tasks.
+
+Each score is accompanied by a rank calculated only among unique LiveBench-matched models that are currently available in the plans compared by this project. The rank is therefore a plan-selection rank, not the global LiveBench rank.
+
+Model matching is normalized from the provider model name to LiveBench's model identifiers. The matched `livebench_model` id is included in `data/current.json` for auditability. Models that are not present in the current LiveBench release keep an empty benchmark score rather than receiving an inferred value.
+
 ## Run
 
 ```bash
@@ -38,7 +52,7 @@ python scraper/main.py
 
 Outputs:
 
-- `data/current.json` — latest normalized data
+- `data/current.json` — latest normalized pricing and benchmark data
 - `data/history/YYYY-MM-DD.json` — daily snapshot
 - `index.html` — static comparison UI
 
