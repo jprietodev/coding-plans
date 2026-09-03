@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coding Plans Comparator</title>
+  <meta name="description" content="Compare effective LLM token prices in coding subscription plans.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Coding subscription economics</p>
+      <h1>Coding Plans Comparator</h1>
+      <p class="intro">Nominal API prices adjusted by the monthly allowance you actually get for your subscription.</p>
+      <div id="summary" class="summary" aria-live="polite"></div>
+    </header>
+
+    <section class="controls" aria-label="Filters">
+      <label>
+        Search model
+        <input id="search" type="search" placeholder="GPT, GLM, Kimi…">
+      </label>
+      <label>
+        Provider
+        <select id="provider">
+          <option value="">All providers</option>
+        </select>
+      </label>
+      <label>
+        Sort by
+        <select id="sort">
+          <option value="model">Model</option>
+          <option value="effective_output_per_mt">Effective output price</option>
+          <option value="effective_input_per_mt">Effective input price</option>
+          <option value="value_multiplier">Value multiplier</option>
+          <option value="monthly_allowance_usd">Monthly allowance</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="method">
+      <strong>Effective price</strong> = API price × subscription price ÷ model allowance.
+      It assumes the full monthly allowance is consumed.
+    </section>
+
+    <div id="error" class="error" hidden></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Allowance</th>
+            <th>Value</th>
+            <th>Input API</th>
+            <th>Input effective</th>
+            <th>Output API</th>
+            <th>Output effective</th>
+            <th>Cache read effective</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>
