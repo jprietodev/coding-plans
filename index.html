@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Coding Plans Comparator</title>
-  <meta name="description" content="Compare effective LLM token prices in coding subscription plans.">
+  <meta name="description" content="Compare effective LLM token prices and coding benchmarks in coding subscription plans.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <header class="hero">
       <p class="eyebrow">Coding subscription economics</p>
       <h1>Coding Plans Comparator</h1>
-      <p class="intro">Nominal API prices adjusted by the monthly allowance you actually get for your subscription.</p>
+      <p class="intro">Nominal API prices adjusted by the monthly allowance you actually get for your subscription, alongside coding benchmark scores.</p>
       <div id="summary" class="summary" aria-live="polite"></div>
     </header>
 
@@ -30,8 +30,16 @@
     </section>
 
     <section class="method">
-      <strong>Effective price</strong> = API price × subscription price ÷ model allowance.
-      It assumes the full monthly allowance is consumed. Click any table header to sort ascending or descending.
+      <div>
+        <strong>Effective price</strong> = API price × subscription price ÷ model allowance.
+        It assumes the full monthly allowance is consumed.
+      </div>
+      <div class="benchmark-note">
+        <strong>Benchmarks</strong> use the latest public <a href="https://livebench.ai/" target="_blank" rel="noreferrer">LiveBench</a> release.
+        Overall is the equal-weighted category average; Coding and Agentic Coding use LiveBench's published category definitions.
+        Rankings are only among benchmark-matched unique models available in these plans. <span id="benchmark-meta"></span>
+      </div>
+      <div class="sort-note">Click any table header to sort ascending or descending.</div>
     </section>
 
     <div id="error" class="error" hidden></div>
@@ -42,6 +50,9 @@
           <tr>
             <th data-sort="provider" aria-sort="none"><button class="sort-button" type="button">Provider <span class="sort-indicator" aria-hidden="true"></span></button></th>
             <th data-sort="model" aria-sort="ascending"><button class="sort-button" type="button">Model <span class="sort-indicator" aria-hidden="true">▲</span></button></th>
+            <th data-sort="livebench_overall" aria-sort="none"><button class="sort-button" type="button" title="LiveBench overall score">LB Overall <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="livebench_coding" aria-sort="none"><button class="sort-button" type="button" title="LiveBench Coding score">LB Coding <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            <th data-sort="livebench_agentic_coding" aria-sort="none"><button class="sort-button" type="button" title="LiveBench Agentic Coding score">LB Agentic <span class="sort-indicator" aria-hidden="true"></span></button></th>
             <th data-sort="monthly_allowance_usd" aria-sort="none"><button class="sort-button" type="button">Allowance <span class="sort-indicator" aria-hidden="true"></span></button></th>
             <th data-sort="value_multiplier" aria-sort="none"><button class="sort-button" type="button">Value <span class="sort-indicator" aria-hidden="true"></span></button></th>
             <th data-sort="api_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input API <span class="sort-indicator" aria-hidden="true"></span></button></th>
