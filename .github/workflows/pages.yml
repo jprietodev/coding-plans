@@ -9,6 +9,7 @@ on:
       - "app.js"
       - "compare.js"
       - "insights.js"
+      - "bootstrap.js"
       - "style.css"
       - "compare.css"
       - "insights.css"
@@ -48,11 +49,12 @@ jobs:
           node --check app.js
           node --check compare.js
           node --check insights.js
+          node --check bootstrap.js
 
       - name: Prepare static site
         run: |
           mkdir -p _site/data/history
-          cp index.html app.js compare.js insights.js style.css compare.css insights.css _site/
+          cp index.html app.js compare.js insights.js bootstrap.js style.css compare.css insights.css _site/
           cp data/current.json _site/data/current.json
           cp data/history/*.json _site/data/history/ 2>/dev/null || true
           python - <<'PY'
