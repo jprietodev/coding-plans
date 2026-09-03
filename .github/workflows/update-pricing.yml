@@ -23,6 +23,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      ARTIFICIALANALYSIS_APIKEY: ${{ secrets.ARTIFICIALANALYSIS_APIKEY }}
 
     steps:
       - name: Checkout
@@ -39,6 +41,9 @@ jobs:
 
       - name: Run tests
         run: python -m unittest discover -s tests -v
+
+      - name: Check Artificial Analysis access
+        run: python scraper/artificial_analysis.py
 
       - name: Fetch and normalize pricing
         run: python scraper/main.py
