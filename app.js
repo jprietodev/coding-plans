@@ -1,4 +1,9 @@
-const state = { data: null, rows: [] };
+const state = {
+  data: null,
+  rows: [],
+  sortKey: 'model',
+  sortDirection: 'asc',
+};
 
 const els = {
   rows: document.querySelector('#rows'),
@@ -7,6 +12,7 @@ const els = {
   sort: document.querySelector('#sort'),
   summary: document.querySelector('#summary'),
   error: document.querySelector('#error'),
+  sortHeaders: [...document.querySelectorAll('th[data-sort]')],
 };
 
 const money = (value, digits = 4) => {
@@ -21,10 +27,49 @@ const escapeHtml = (value) => String(value)
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#039;');
 
+function compareValues(a, b, key) {
+  const av = a[key];
+  const bv = b[key];
+
+  if (av === null || av === undefined) return 1;
+  if (bv === null || bv === undefined) return -1;
+
+  if (typeof av === 'string' || typeof bv === 'string') {
+    return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: 'base' });
+  }
+
+  return Number(av) - Number(bv);
+}
+
+function updateSortHeaders() {
+  for (const th of els.sortHeaders) {
+    const key = th.dataset.sort;
+    const active = key === state.sortKey;
+    th.setAttribute('aria-sort', active ? (state.sortDirection === 'asc' ? 'ascending' : 'descending') : 'none');
+
+    const indicator = th.querySelector('.sort-indicator');
+    if (indicator) indicator.textContent = active ? (state.sortDirection === 'asc' ? '▲' : '▼') : '';
+  }
+}
+
+function setSort(key, direction = null) {
+  if (state.sortKey === key && direction === null) {
+    state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    state.sortKey = key;
+    state.sortDirection = direction ?? 'asc';
+  }
+
+  if ([...els.sort.options].some((option) => option.value === key)) {
+    els.sort.value = key;
+  }
+
+  render();
+}
+
 function render() {
   const search = els.search.value.trim().toLowerCase();
   const provider = els.provider.value;
-  const sort = els.sort.value;
 
   let rows = state.rows.filter((row) => {
     const searchMatch = !search || row.model.toLowerCase().includes(search);
@@ -33,13 +78,11 @@ function render() {
   });
 
   rows.sort((a, b) => {
-    if (sort === 'model') return a.model.localeCompare(b.model);
-    const av = a[sort];
-    const bv = b[sort];
-    if (av === null || av === undefined) return 1;
-    if (bv === null || bv === undefined) return -1;
-    return sort === 'value_multiplier' || sort === 'monthly_allowance_usd' ? bv - av : av - bv;
+    const comparison = compareValues(a, b, state.sortKey);
+    return state.sortDirection === 'asc' ? comparison : -comparison;
   });
+
+  updateSortHeaders();
 
   els.rows.innerHTML = rows.map((row) => `
     <tr>
@@ -82,5 +125,15 @@ async function load() {
 
 els.search.addEventListener('input', render);
 els.provider.addEventListener('change', render);
-els.sort.addEventListener('change', render);
+els.sort.addEventListener('change', () => {
+  const key = els.sort.value;
+  const defaultDirection = key === 'model' ? 'asc' : 'asc';
+  setSort(key, defaultDirection);
+});
+
+for (const th of els.sortHeaders) {
+  const button = th.querySelector('.sort-button');
+  button?.addEventListener('click', () => setSort(th.dataset.sort));
+}
+
 load();
