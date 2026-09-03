@@ -307,6 +307,12 @@ function enhanceTableRows() {
     const selected = compareState.selected.has(rowKey(row));
     tr.classList.toggle('is-selected-for-compare', selected);
 
+    // Keep enhancement idempotent: a row must never accumulate compare controls
+    // when comparison state refreshes without replacing the table DOM.
+    for (const existingActions of modelCell.querySelectorAll(':scope > .row-actions')) {
+      existingActions.remove();
+    }
+
     const actions = document.createElement('div');
     actions.className = 'row-actions';
     const button = document.createElement('button');
