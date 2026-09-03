@@ -42,29 +42,102 @@
       <div class="sort-note">Click any table header to sort ascending or descending.</div>
     </section>
 
+    <div class="view-tabs" role="tablist" aria-label="Comparator view">
+      <button id="table-tab" class="view-tab active" type="button" role="tab" aria-selected="true" aria-controls="table-view">Table</button>
+      <button id="quadrant-tab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="quadrant-view">Quadrant</button>
+    </div>
+
     <div id="error" class="error" hidden></div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th data-sort="provider" aria-sort="none"><button class="sort-button" type="button">Provider <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="model" aria-sort="ascending"><button class="sort-button" type="button">Model <span class="sort-indicator" aria-hidden="true">▲</span></button></th>
-            <th data-sort="livebench_overall" aria-sort="none"><button class="sort-button" type="button" title="LiveBench overall score">LB Overall <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="livebench_coding" aria-sort="none"><button class="sort-button" type="button" title="LiveBench Coding score">LB Coding <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="livebench_agentic_coding" aria-sort="none"><button class="sort-button" type="button" title="LiveBench Agentic Coding score">LB Agentic <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="monthly_allowance_usd" aria-sort="none"><button class="sort-button" type="button">Allowance <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="value_multiplier" aria-sort="none"><button class="sort-button" type="button">Value <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="api_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input API <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="effective_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="api_output_per_mt" aria-sort="none"><button class="sort-button" type="button">Output API <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="effective_output_per_mt" aria-sort="none"><button class="sort-button" type="button">Output effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
-            <th data-sort="effective_cache_read_per_mt" aria-sort="none"><button class="sort-button" type="button">Cache read effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
+    <section id="table-view" role="tabpanel" aria-labelledby="table-tab">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-sort="provider" aria-sort="none"><button class="sort-button" type="button">Provider <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="model" aria-sort="ascending"><button class="sort-button" type="button">Model <span class="sort-indicator" aria-hidden="true">▲</span></button></th>
+              <th data-sort="livebench_overall" aria-sort="none"><button class="sort-button" type="button" title="LiveBench overall score">LB Overall <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="livebench_coding" aria-sort="none"><button class="sort-button" type="button" title="LiveBench Coding score">LB Coding <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="livebench_agentic_coding" aria-sort="none"><button class="sort-button" type="button" title="LiveBench Agentic Coding score">LB Agentic <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="monthly_allowance_usd" aria-sort="none"><button class="sort-button" type="button">Allowance <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="value_multiplier" aria-sort="none"><button class="sort-button" type="button">Value <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="api_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input API <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="effective_input_per_mt" aria-sort="none"><button class="sort-button" type="button">Input effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="api_output_per_mt" aria-sort="none"><button class="sort-button" type="button">Output API <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="effective_output_per_mt" aria-sort="none"><button class="sort-button" type="button">Output effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th data-sort="effective_cache_read_per_mt" aria-sort="none"><button class="sort-button" type="button">Cache read effective <span class="sort-indicator" aria-hidden="true"></span></button></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="quadrant-view" class="quadrant-view" role="tabpanel" aria-labelledby="quadrant-tab" hidden>
+      <div class="quadrant-controls" aria-label="Quadrant configuration">
+        <label>
+          Capability · Y axis
+          <select id="quadrant-y">
+            <option value="coding_intelligence">Coding intelligence · 50% Coding + 50% Agentic</option>
+            <option value="benchmark_mean">Benchmark mean · Overall + Coding + Agentic</option>
+            <option value="livebench_coding">LiveBench Coding</option>
+            <option value="livebench_agentic_coding">LiveBench Agentic Coding</option>
+            <option value="livebench_overall">LiveBench Overall</option>
+          </select>
+        </label>
+        <label>
+          Economics · X axis
+          <select id="quadrant-x">
+            <option value="coding_cost">Coding cost · 40% input + 50% output + 10% cache</option>
+            <option value="effective_price_mean">Effective price mean · simple average</option>
+            <option value="effective_input_per_mt">Effective input price</option>
+            <option value="effective_output_per_mt">Effective output price</option>
+            <option value="effective_cache_read_per_mt">Effective cache read price</option>
+            <option value="value_multiplier">Value multiplier</option>
+            <option value="monthly_allowance_usd">Monthly allowance</option>
+          </select>
+        </label>
+        <label>
+          Quadrant split
+          <select id="quadrant-split">
+            <option value="median">Median</option>
+            <option value="mean">Mean</option>
+          </select>
+        </label>
+        <label>
+          Bubble size
+          <select id="quadrant-size">
+            <option value="monthly_allowance_usd">Monthly allowance</option>
+            <option value="value_multiplier">Value multiplier</option>
+            <option value="equal">Equal</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="quadrant-explainer">
+        <div><strong id="quadrant-title">Coding intelligence vs coding cost</strong></div>
+        <div id="quadrant-description">Top-left is the default sweet spot: higher coding capability at lower effective cost.</div>
+      </div>
+
+      <div class="chart-card">
+        <div id="quadrant-chart" class="quadrant-chart" aria-live="polite"></div>
+        <div id="quadrant-tooltip" class="chart-tooltip" hidden></div>
+      </div>
+
+      <div class="quadrant-footer">
+        <div id="quadrant-legend" class="chart-legend"></div>
+        <div id="quadrant-meta" class="quadrant-meta"></div>
+      </div>
+
+      <section class="sweet-spot" aria-labelledby="sweet-spot-title">
+        <div>
+          <p class="eyebrow">Decision support</p>
+          <h2 id="sweet-spot-title">Sweet spot</h2>
+          <p id="sweet-spot-description" class="sweet-spot-description"></p>
+        </div>
+        <div id="sweet-spot-list" class="sweet-spot-list"></div>
+      </section>
+    </section>
   </main>
   <script src="app.js" defer></script>
 </body>
