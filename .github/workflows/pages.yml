@@ -10,6 +10,9 @@ on:
       - "style.css"
       - "data/current.json"
       - ".github/workflows/pages.yml"
+  workflow_run:
+    workflows: ["Update pricing"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -22,6 +25,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -31,6 +35,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: main
 
       - name: Prepare static site
         run: |
