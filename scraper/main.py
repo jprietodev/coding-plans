@@ -11,6 +11,11 @@ from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
 
+try:
+    from scraper.livebench import enrich_rows, load_livebench
+except ModuleNotFoundError:
+    from livebench import enrich_rows, load_livebench
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 HISTORY_DIR = DATA_DIR / "history"
@@ -182,6 +187,11 @@ def build_snapshot() -> dict[str, Any]:
     rows = [model for provider in providers for model in provider["models"]]
     rows.sort(key=lambda item: (item["model"].casefold(), item["provider"].casefold()))
 
+    livebench = load_livebench()
+    livebench_metadata = enrich_rows(rows, livebench)
+    if livebench_metadata["matched_unique_models"] < 3:
+        raise RuntimeError("LiveBench model matching produced too few matches; refusing to publish benchmark data")
+
     return {
         "generated_at": now.isoformat(timespec="seconds"),
         "timezone": "Europe/Madrid",
@@ -189,6 +199,10 @@ def build_snapshot() -> dict[str, Any]:
             "effective_price_formula": "api_price * subscription_usd / monthly_allowance_usd",
             "value_multiplier_formula": "monthly_allowance_usd / subscription_usd",
             "assumption": "Effective prices assume the full monthly model allowance is consumed.",
+            "benchmark_ranking": "LiveBench ranks are calculated only among unique benchmark-matched models available in the compared plans.",
+        },
+        "benchmarks": {
+            "livebench": livebench_metadata,
         },
         "providers": providers,
         "rows": rows,
@@ -212,7 +226,14 @@ def write_snapshot(snapshot: dict[str, Any]) -> tuple[Path, Path]:
 def main() -> None:
     snapshot = build_snapshot()
     current, history = write_snapshot(snapshot)
+    benchmark = snapshot["benchmarks"]["livebench"]
     print(f"Wrote {len(snapshot['rows'])} normalized model rows")
+    print(
+        f"LiveBench {benchmark['release']}: matched {benchmark['matched_unique_models']} unique models; "
+        f"unmatched {len(benchmark['unmatched_models'])} plan model names"
+    )
+    if benchmark["unmatched_models"]:
+        print("Unmatched: " + ", ".join(benchmark["unmatched_models"]))
     print(f"Current: {current.relative_to(ROOT)}")
     print(f"History: {history.relative_to(ROOT)}")
 
